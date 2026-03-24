@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BadgeCheck, Heart, MessageCircle, Share2, ShareIcon } from 'lucide-react'
+import { BadgeCheck, Heart, MessageCircle, Send, SendIcon, Share2, ShareIcon } from 'lucide-react'
 import moment from 'moment'
 import { dummyUserData } from '../assets/assets'
 import { useNavigate } from 'react-router-dom'
@@ -58,7 +58,7 @@ const PostCard = ({post}) => {
                 <span>{12}</span>
             </div>
             <div className='flex items-center gap-1'>
-                <Share2 className="w-4 h-4"/>
+                <SendIcon className="w-4.5 h-4.5"/>
                 <span>{7}</span>
             </div>
         </div>
