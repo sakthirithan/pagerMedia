@@ -30,3 +30,5 @@ const PORT = process.env.PORT || 4000;
   } catch (error) {
     console.log("Server failed to start:", error.message);
   }
+
+  export default app;
