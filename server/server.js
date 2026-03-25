@@ -11,22 +11,11 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
+// Connect to DB
+await connectDB();
+
 // Routes
 app.get('/', (req, res) => res.send('Server is Running'))
 app.use('/api/inngest', serve({ client: inngest, functions }))
 
-const PORT = process.env.PORT || 4000;
-
-
-
-// Start server safely
-  try {
-    await connectDB();
-
-    app.listen(PORT, () => {
-      console.log(`Server is running on Port ${PORT}`);
-    });
-
-  } catch (error) {
-    console.log("Server failed to start:", error.message);
-  }
+export default app;
