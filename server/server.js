@@ -2,27 +2,21 @@ import express from "express";
 import cors from "cors";
 import "dotenv/config";
 import connectDB from "./configs/db.js";
+import { inngest, functions } from './inngest/index.js'
+import { serve } from 'inngest/express'
 
 const app = express();
-const PORT = 4000
 
 app.use(express.json());
 app.use(cors());
 
-app.get("/", async (req, res) => {
-  try {
-    await connectDB();
-    res.send("Server is Running");
+await connectDB();
 
+app.get('/', (req, res)=> res.send('server is running'))
+app.use("/api/inngest", serve({client: inngest, functions }));
 
-  } catch (error) {
-    res.status(500).send("DB Error: " + error.message);
-  }
-});
+const PORT = process.env.PORT || 4000
 
-// Start the server
-    app.listen(PORT, () => {
-      console.log(`Server is running at http://localhost:${PORT}`);
-    });
+app.listen(PORT, ()=> console.log(`server is running on port ${PORT}`))
 
 export default app;

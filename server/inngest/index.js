@@ -1,12 +1,12 @@
 import { Inngest } from "inngest";
 import User from "../models/user.js"
 import connectDB from "../configs/db.js";
+import { serve } from "inngest/express";
 
 
 // Create a client to send and receive events
 export const inngest = new Inngest({
   id: "pagermedia-app",
-  signingKey: process.env.INNGEST_SIGNING_KEY,
 });
 
 // "CREATE" : Inngest Function to "CREATE" USER data to a Database
@@ -25,8 +25,8 @@ const syncUserCreation = inngest.createFunction(
     let username = email.split("@")[0];
 
     //Check availability of Username
-    let existingUser = await User.findOne({ username });
-    if (existingUser) {
+    let user = await User.findOne({ username });
+    if (user) {
       username = username + Math.floor(Math.random() * 10000);
     }
 
