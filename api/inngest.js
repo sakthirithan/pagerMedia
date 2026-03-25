@@ -1,4 +1,4 @@
-import { serve } from "inngest/next";
+import { serve } from "inngest/vercel";
 import connectDB from "../server/configs/db.js";
 import { inngest, functions } from "../server/inngest/index.js";
 
