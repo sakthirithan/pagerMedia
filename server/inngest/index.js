@@ -1,64 +1,66 @@
 import { Inngest } from "inngest";
-import User from "../models/user";
+import User from "../models/user.js";
 
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "pagermedia-app" });
 
 // "CREATE" : Inngest Function to "CREATE" USER data to a Database
 const syncUserCreation = inngest.createFunction(
-    {id: 'sync-user-from-clerk'},
-    {event: 'clerk/user.created'},
-    async ({event})=>{
-        const {id, first_name, last_name, email_addresses, image_url} = event.data
-        let username = email_addresses[0].email_addresses.split('@')[0]
+  {
+    id: "sync-user-from-clerk",
+    triggers: [{ event: "clerk/user.created" }],
+  },
+  async ({ event }) => {
+    const { id, first_name, last_name, email_addresses, image_url } =
+      event.data;
+    let username = email_addresses[0].email_address.split("@")[0];
 
-        //Check availability of Username
-        const user = await User.findOne({username})
-
-        if(user) {
-            username = username + Math.floor(Math.random() * 10000)
-        }
-
-        const userData = {
-            _id: id,
-            email: email_addresses[0].email_addresses,
-            full_name: first_name + " " + last_name,
-            profile_picture: image_url,
-            username 
-        }
-        await User.create(userData)
+    //Check availability of Username
+    if (User) {
+      username = username + Math.floor(Math.random() * 10000);
     }
-)
+
+    const userData = {
+      _id: id,
+      email: email_addresses?.[0]?.email_address,
+      full_name: first_name + " " + last_name,
+      profile_picture: image_url,
+      username,
+    };
+    await User.create(userData);
+  },
+);
 
 // "UPDATE" : Inngest Function to "UPDATE" USER data in DataBase
 const syncUserUpdation = inngest.createFunction(
-    {id: 'update-user-from-clerk'},
-    {event: 'clerk/user.updated'},
-    async ({event})=>{
-        const {id, first_name, last_name, email_addresses, image_url} = event.data
+  {
+    id: "update-user-from-clerk",
+    triggers: [{ event: "clerk/user.updated" }],
+  },
+  async ({ event }) => {
+    const { id, first_name, last_name, email_addresses, image_url } =
+      event.data;
 
-        const updatedUserData = {
-            email: email_addresses[0].email_addresses,
-            full_name: first_name + " " + last_name,
-            profile_picture: image_url
-        }
-        await User.findByIdAndUpdate(id, updatedUserData)
-    }
-)
+    const updatedUserData = {
+      email: email_addresses?.[0]?.email_address,
+      full_name: first_name + " " + last_name,
+      profile_picture: image_url,
+    };
+    await User.findByIdAndUpdate(id, updatedUserData);
+  },
+);
 
 // "DELETE" : Inngest Function to "DELETE" USER from DataBase
 const syncUserDeletion = inngest.createFunction(
-    {id: 'delete-user-with-clerk'},
-    {event: 'clerk/user.deleted'},
-    async ({event})=>{
-        const {id } = event.data
-        await User.findByIdAndDelete(id)
-    }
-)
+  {
+    id: "delete-user-with-clerk",
+    triggers: [{ event: "clerk/user.deleted" }],
+  },
+  async ({ event }) => {
+    const { id } = event.data;
+    await User.findByIdAndDelete(id);
+  },
+);
 
 // Create an empty array where we'll export future Inngest functions
-export const functions = [
-    syncUserCreation,
-    syncUserUpdation,
-    syncUserDeletion
-];
+export const functions = [syncUserCreation, syncUserUpdation, syncUserDeletion];
