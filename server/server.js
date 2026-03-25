@@ -1,34 +1,31 @@
-import express from 'express';
-import cors from 'cors';
-import 'dotenv/config';
-import connectDB from './configs/db.js';
-import { inngest, functions } from './inngest/index.js'
-import { serve } from 'inngest/express'
+import express from "express";
+import cors from "cors";
+import "dotenv/config";
+import connectDB from "./configs/db.js";
+import { inngest, functions } from "./inngest/index.js";
+import { serve } from "inngest/express";
 
 const app = express();
-
+const PORT = 4000
 // Middleware
 app.use(express.json());
 app.use(cors());
 
-// Routes
-app.get('/', (req, res) => res.send('Server is Running'))
-app.use('/api/inngest', serve({ client: inngest, functions }))
-
-const PORT = process.env.PORT || 4000;
-
-
-
-// Start server safely
+// Connect to DB
   try {
-    await connectDB();
-
-    app.listen(PORT, () => {
-      console.log(`Server is running on Port ${PORT}`);
-    });
+    await connectDB()
 
   } catch (error) {
-    console.log("Server failed to start:", error.message);
+    console.error("DB connection failed:", error.message);
   }
 
-  export default app;
+// Routes
+app.get("/", (req, res) => res.send("Server is Running Successfully"));
+app.use("/api/inngest", serve({ client: inngest, functions }));
+// Start the server
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`);
+});
+
+
+export default app;
