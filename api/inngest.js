@@ -1,6 +1,10 @@
-import { serve } from "inngest/express";
+import { serve } from "inngest/next";
 import connectDB from "../server/configs/db.js";
 import { inngest, functions } from "../server/inngest/index.js";
+
+export const config = {
+  runtime: "nodejs",
+};
 
 const handler = serve({
   client: inngest,
@@ -8,6 +12,6 @@ const handler = serve({
 });
 
 export default async function (req, res) {
-  await connectDB(); // connect DB first
-  return handler(req, res); // direct call
+  await connectDB();
+  return handler(req, res);
 }
