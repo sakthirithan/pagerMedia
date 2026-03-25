@@ -51,7 +51,8 @@ const syncUserUpdation = inngest.createFunction(
     await connectDB();
     const { id, first_name, last_name, email_addresses, image_url } =
       event.data;
-
+    const email = email_addresses?.[0]?.email_address;
+    
     const updatedUserData = {
       email: email,
       full_name: first_name + " " + last_name,
