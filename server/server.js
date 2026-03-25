@@ -46,15 +46,15 @@ app.get("/", async (req, res) => {
     await connectDB();
     res.send("Server is Running");
 
-    // Start the server
-    app.listen(PORT, () => {
-      console.log(`Server is running at http://localhost:${PORT}`);
-    });
 
   } catch (error) {
     res.status(500).send("DB Error: " + error.message);
   }
 });
 
+// Start the server
+    app.listen(PORT, () => {
+      console.log(`Server is running at http://localhost:${PORT}`);
+    });
 
 export default app;
