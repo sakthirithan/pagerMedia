@@ -1,6 +1,6 @@
 import { serve } from "inngest/express";
-import connectDB from "../configs/db.js";
-import { inngest, functions } from "../inngest/index.js";
+import connectDB from "../server/configs/db.js";
+import { inngest, functions } from "../server/inngest/index.js";
 
 export default async function handler(req, res) {
   try {
