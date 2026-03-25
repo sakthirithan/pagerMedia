@@ -2,17 +2,12 @@ import { serve } from "inngest/express";
 import connectDB from "../server/configs/db.js";
 import { inngest, functions } from "../server/inngest/index.js";
 
-export default async function handler(req, res) {
-  try {
-    await connectDB();
+const handler = serve({
+  client: inngest,
+  functions,
+});
 
-    return serve({
-      client: inngest,
-      functions,
-    })(req, res);
-
-  } catch (error) {
-    console.error("Inngest Error:", error.message);
-    res.status(500).send("Error");
-  }
+export default async function (req, res) {
+  await connectDB(); // connect DB first
+  return handler(req, res); // direct call
 }
