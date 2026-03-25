@@ -2,26 +2,24 @@ import { serve } from "inngest/express";
 import connectDB from "../configs/db.js";
 import { inngest, functions } from "../inngest/index.js";
 
-let isConnected = false;
-
-const connectDatabase = async () => {
-  if (!isConnected) {
-    await connectDB();
-    isConnected = true;
-  }
-};
-
 export default async function handler(req, res) {
   try {
-    await connectDatabase();
+    console.log("Inngest function called");
 
-    return serve({
+    await connectDB(); // ensure DB
+
+    const handlerFn = serve({
       client: inngest,
       functions,
-    })(req, res);
+    });
+
+    return handlerFn(req, res);
 
   } catch (error) {
-    console.error("Inngest Error:", error.message);
-    res.status(500).send("Internal Server Error");
+    console.error("❌ INNGEST CRASH:", error);
+    return res.status(500).json({
+      error: "Inngest failed",
+      message: error.message,
+    });
   }
 }
